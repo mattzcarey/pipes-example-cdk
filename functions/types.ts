@@ -2,7 +2,7 @@ export interface MessageBody {
   firstName: string;
   lastName: string;
   email: string;
-  changedParameters: string[];
+  modifiedAttributes: string[];
 }
 
 export interface User {

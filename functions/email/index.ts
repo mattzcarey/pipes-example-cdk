@@ -21,7 +21,7 @@ export const handler = async (event: SQSEvent): Promise<SQSEvent> => {
           Data: `Test email body in HTMl. Name: ${body.firstName} ${
             body.lastName
           }.
-            You changed the following parameters: ${body.changedParameters.join(
+            You changed the following parameters: ${body.modifiedAttributes.join(
               ', ',
             )}
             If this was not you, please contact support.`,

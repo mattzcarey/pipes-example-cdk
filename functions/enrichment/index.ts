@@ -20,19 +20,19 @@ export const handler = async (
 
   const user = await getUser(userId);
 
-  const changedParameters: string[] = [];
+  const modifiedAttributes: string[] = [];
   for (const key in event.dynamodb.NewImage) {
     if (event.dynamodb.NewImage[key].S !== event.dynamodb.OldImage[key].S) {
-      changedParameters.push(key);
+      modifiedAttributes.push(key);
     }
   }
 
-  if (changedParameters.length === 0) {
+  if (modifiedAttributes.length === 0) {
     throw new Error('No changed parameters found');
   }
 
   return JSON.stringify({
     ...user,
-    changedParameters,
+    modifiedAttributes,
   } as MessageBody);
 };
