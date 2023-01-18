@@ -1,18 +1,16 @@
-import { DynamoDBRecord } from 'aws-lambda';
+import { DynamoDBRecord, DynamoDBStreamEvent } from 'aws-lambda';
 import { MessageBody } from '../types';
 import { getUser } from './getUser';
 
-export const handler = async (
-  dynamoDBStreamEvent: [DynamoDBRecord],
-): Promise<string> => {
-  console.log('dynamoDBStreamEvent', dynamoDBStreamEvent);
-  const event: DynamoDBRecord = dynamoDBStreamEvent[0];
+export const handler = async (event: DynamoDBStreamEvent): Promise<string> => {
+  console.log('event', event);
+  const record: DynamoDBRecord = event.Records[0];
 
-  if (event.dynamodb?.NewImage == null || event.dynamodb.OldImage == null) {
+  if (record.dynamodb?.NewImage == null || record.dynamodb.OldImage == null) {
     throw new Error('No NewImage or OldImage found');
   }
 
-  const userId = event.dynamodb.NewImage.userId.S;
+  const userId = record.dynamodb.NewImage.userId.S;
 
   if (userId == null) {
     throw new Error('No userId found');
@@ -21,8 +19,8 @@ export const handler = async (
   const user = await getUser(userId);
 
   const modifiedAttributes: string[] = [];
-  for (const key in event.dynamodb.NewImage) {
-    if (event.dynamodb.NewImage[key].S !== event.dynamodb.OldImage[key].S) {
+  for (const key in record.dynamodb.NewImage) {
+    if (record.dynamodb.NewImage[key].S !== record.dynamodb.OldImage[key].S) {
       modifiedAttributes.push(key);
     }
   }
