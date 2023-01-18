@@ -1,0 +1,12 @@
+*.hbs
+.next
+yarn.lock
+**/stack.json
+.gitlab-ci.yml
+.npm
+.webpack
+.esbuild
+**/coverage
+**/dist
+**/build
+**/public

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "esModuleInterop": true,
+    "types": ["node", "jest"],
+    "lib": ["es2021"],
+    "removeComments": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "baseUrl": "."
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+  "include": [
+    "*.ts",
+    "./helpers/**/*.ts",
+    "./cdk/**/*.ts",
+    "./bin/**/*.ts",
+    "./custom-constructs/**/*.ts",
+    "./functions/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}
