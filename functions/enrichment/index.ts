@@ -6,21 +6,13 @@ export const handler = async (event: DynamoDBStreamEvent): Promise<string> => {
   console.log('event', event);
   const record: DynamoDBRecord = event.Records[0];
 
-  if (record.dynamodb?.NewImage == null || record.dynamodb.OldImage == null) {
+  if (record.dynamodb?.NewImage == null && record.dynamodb?.OldImage == null) {
     throw new Error('No NewImage or OldImage found');
   }
 
-  const userId = record.dynamodb.NewImage.userId.S;
-
-  if (userId == null) {
-    throw new Error('No userId found');
-  }
-
-  const user = await getUser(userId);
-
   const modifiedAttributes: string[] = [];
   for (const key in record.dynamodb.NewImage) {
-    if (record.dynamodb.NewImage[key].S !== record.dynamodb.OldImage[key].S) {
+    if (record.dynamodb.NewImage[key].S !== record.dynamodb.OldImage?.[key].S) {
       modifiedAttributes.push(key);
     }
   }
@@ -28,6 +20,14 @@ export const handler = async (event: DynamoDBStreamEvent): Promise<string> => {
   if (modifiedAttributes.length === 0) {
     throw new Error('No changed parameters found');
   }
+
+  const userId = record.dynamodb.NewImage?.userId.S;
+
+  if (userId == null) {
+    throw new Error('No userId found');
+  }
+
+  const user = await getUser(userId);
 
   return JSON.stringify({
     ...user,
