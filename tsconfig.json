@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2019",
     "esModuleInterop": true,
-    "types": ["node", "jest"],
+    "types": ["node"],
     "lib": ["es2021"],
     "removeComments": true,
     "moduleResolution": "node",
