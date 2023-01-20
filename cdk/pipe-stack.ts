@@ -31,7 +31,7 @@ export class PipeStack extends Stack {
                 'dynamodb:GetShardIterator',
                 'dynamodb:ListStreams',
               ],
-              resources: [props.sourceTable.tableStreamArn.toString()],
+              resources: [props.sourceTable.tableStreamArn],
               effect: Effect.ALLOW,
             }),
           ],
@@ -60,7 +60,7 @@ export class PipeStack extends Stack {
     new CfnPipe(this, 'MessagingPipe', {
       name: 'MessagingPipe',
       roleArn: pipesRole.roleArn,
-      source: props.sourceTable.tableStreamArn.toString(),
+      source: props.sourceTable.tableStreamArn,
       sourceParameters: {
         dynamoDbStreamParameters: {
           startingPosition: 'LATEST',
