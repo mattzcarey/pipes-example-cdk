@@ -14,6 +14,10 @@ export class PipeStack extends Stack {
   constructor(scope: Construct, id: string, props: PipeStackProps) {
     super(scope, id, props);
 
+    if (props.sourceTable.tableStreamArn === undefined) {
+      throw new Error('Table stream is not enabled');
+    }
+
     const pipesRole = new Role(this, 'PipesRole', {
       roleName: 'PipesRole',
       assumedBy: new ServicePrincipal('pipes.amazonaws.com'),
@@ -27,7 +31,7 @@ export class PipeStack extends Stack {
                 'dynamodb:GetShardIterator',
                 'dynamodb:ListStreams',
               ],
-              resources: [props.sourceTable.tableStreamArn?.toString() ?? ''],
+              resources: [props.sourceTable.tableStreamArn.toString()],
               effect: Effect.ALLOW,
             }),
           ],
@@ -44,7 +48,7 @@ export class PipeStack extends Stack {
         PipesSQSSendMessage: new PolicyDocument({
           statements: [
             new PolicyStatement({
-              actions: ['sqs:SendMessage', 'sqs:GetQueueAttributes', 'sqs:*'],
+              actions: ['sqs:SendMessage', 'sqs:GetQueueAttributes'],
               resources: [props.targetQueue.queueArn],
               effect: Effect.ALLOW,
             }),
@@ -56,7 +60,7 @@ export class PipeStack extends Stack {
     new CfnPipe(this, 'MessagingPipe', {
       name: 'MessagingPipe',
       roleArn: pipesRole.roleArn,
-      source: props.sourceTable.tableStreamArn?.toString() ?? '',
+      source: props.sourceTable.tableStreamArn.toString(),
       sourceParameters: {
         dynamoDbStreamParameters: {
           startingPosition: 'LATEST',
